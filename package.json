@@ -35,6 +35,6 @@
 		"marked": "~0.1.6",
 		"mysql": "~2.0.x",
 		"tiny-logger": "~0.0.x",
-		"node-persist": "git://github.com/psychobunny/node-persist.git#master"
+		"node-persist": "git://github.com/akhoury/node-persist.git#master"
 	}
 }
