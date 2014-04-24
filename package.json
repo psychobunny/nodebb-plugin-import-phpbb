@@ -1,0 +1,40 @@
+
+{
+	"name": "nodebb-plugin-import-phpbb",
+	"version": "0.0.1",
+	"description": "A phpBB2 to NodeBB data exporter",
+	"main": "./lib/export.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/psychobunny/nodebb-plugin-import-phpbb"
+	},
+	"keywords": [
+		"phpbb",
+		"plugin",
+		"migrate",
+		"convert",
+		"export",
+		"import"
+	],
+	"author": {
+		"name": "psychobunny",
+		"email": "psycho.bunny@hotmail.com"
+	},
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/psychobunny/nodebb-plugin-import-phpbb/issues"
+	},
+	"dependencies": {
+		"underscore": "~1.5.2",
+		"fs-extra": "~0.8.1",
+		"async": "~0.2.9",
+		"optimist": "~0.6.0",
+		"marked": "~0.1.6",
+		"mysql": "~2.0.x",
+		"tiny-logger": "~0.0.x",
+		"node-persist": "git://github.com/psychobunny/node-persist.git#master"
+	}
+}
