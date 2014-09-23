@@ -1,11 +1,13 @@
 {
-    "id": "nodebb-plugin-import-phpbb",
-    "name": "nodebb-plugin-import-phpbb",
-    "description": "A phpBB2 to NodeBB data exporter",
-    "url": "https://github.com/psychobunny/nodebb-plugin-import-phpbb",
+    	"id": "nodebb-plugin-import-phpbb",
+    	"name": "nodebb-plugin-import-phpbb",
+    	"description": "A phpBB2 to NodeBB data exporter compatible with nodebb-plugin-import",
+    	"url": "https://github.com/psychobunny/nodebb-plugin-import-phpbb",
 	"library": "./admin/index.js",
 	"hooks": [
-		{ "hook": "filter:admin.header.build", "method": "admin.menu", "callbacked": false },
-		{ "hook": "filter:admin.create_routes", "method": "admin.route", "callbacked": true }
-	]
+		{ "hook": "filter:admin.header.build", "method": "admin.menu"},
+		{ "hook": "static:app.load", "method": "admin.load"}
+	],
+    	"templates": "./public/templates",
+    	"minver": "0.5.0"
 }
