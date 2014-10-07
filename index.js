@@ -115,7 +115,8 @@ var logPrefix = '[nodebb-plugin-import-phpbb]';
             + prefix + 'forums.forum_name as _name, '
             + prefix + 'forums.forum_desc as _description '
             + 'FROM ' + prefix + 'forums '
-
+            +  (start >= 0 && limit >= 0 ? 'LIMIT ' + start + ',' + limit : '');
+            
         if (!Exporter.connection) {
             err = {error: 'MySQL connection is not setup. Run setup(config) first'};
             Exporter.error(err.error);
@@ -212,6 +213,21 @@ var logPrefix = '[nodebb-plugin-import-phpbb]';
             });
     };
 
+	var getTopicsMainPids = function(callback) {
+		if (Exporter._topicsMainPids) {
+			return callback(null, Exporter._topicsMainPids);
+		}
+		Exporter.getPaginatedTopics(0, -1, function(err, topicsMap) {
+			if (err) return callback(err);
+
+			Exporter._topicsMainPids = {};
+			Object.keys(topicsMap).forEach(function(_tid) {
+				var topic = topicsMap[_tid];
+				Exporter._topicsMainPids[topic.topic_first_post_id] = topic._tid;
+			});
+			callback(null, Exporter._topicsMainPids);
+		});
+	};
     Exporter.getPosts = function(callback) {
         return Exporter.getPaginatedPosts(0, -1, callback);
     };
@@ -232,19 +248,14 @@ var logPrefix = '[nodebb-plugin-import-phpbb]';
             + prefix + 'posts.post_text as _content, '
             + prefix + 'posts.poster_id as _uid, '
 
-            // I couldnt tell what's the different, they're all HTML to me
-            //+ prefix + 'POST_MARKUP_TYPE as _markup, '
             // maybe use this one to skip
             + prefix + 'posts.post_approved as _approved '
 
             + 'FROM ' + prefix + 'posts '
-            // this post cannot be a its topic's main post, it MUST be a reply-post
-            // see https://github.com/akhoury/nodebb-plugin-import#important-note-on-topics-and-posts
 
-            // phpBB doesn't have post parent ID (phpBB migrator checks if 0)
-            + 'WHERE ' + prefix + 'posts.topic_id > 0 AND ' + prefix + 'posts.post_id NOT IN (SELECT topic_first_post_id FROM ' + prefix + 'topics) '
+		    // the ones that are topics main posts are filtered below
+            + 'WHERE ' + prefix + 'posts.topic_id > 0 '
             + (start >= 0 && limit >= 0 ? 'LIMIT ' + start + ',' + limit : '');
-
 
         if (!Exporter.connection) {
             err = {error: 'MySQL connection is not setup. Run setup(config) first'};
@@ -252,23 +263,28 @@ var logPrefix = '[nodebb-plugin-import-phpbb]';
             return callback(err);
         }
 
-        Exporter.connection.query(query,
-            function(err, rows) {
-                if (err) {
-                    Exporter.error(err);
-                    return callback(err);
-                }
+		Exporter.connection.query(query,
+			function (err, rows) {
+				if (err) {
+					Exporter.error(err);
+					return callback(err);
+				}
+				getTopicsMainPids(function(err, mpids) {
+					//normalize here
+					var map = {};
+					rows.forEach(function (row) {
+						// make it's not a topic
+						if (! mpids[row._pid]) {
+							row._content = row._content || '';
+							row._timestamp = ((row._timestamp || 0) * 1000) || startms;
+							map[row._pid] = row;
+						}
+					});
 
-                //normalize here
-                var map = {};
-                rows.forEach(function(row) {
-                    row._content = row._content || '';
-                    row._timestamp = ((row._timestamp || 0) * 1000) || startms;
-                    map[row._pid] = row;
-                });
+					callback(null, map);
+				});
+			});
 
-                callback(null, map);
-            });
     };
 
     Exporter.teardown = function(callback) {
