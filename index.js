@@ -23,7 +23,7 @@ var logPrefix = '[nodebb-plugin-import-phpbb]';
         Exporter.log(_config);
 
         Exporter.config(_config);
-        Exporter.config('prefix', config.prefix || config.tablePrefix || 'phpbb_');
+        Exporter.config('prefix', config.prefix || config.tablePrefix || '' /* phpbb_ ? */ );
 
         Exporter.connection = mysql.createConnection(_config);
         Exporter.connection.connect();
