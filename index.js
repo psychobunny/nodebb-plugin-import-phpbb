@@ -20,8 +20,6 @@ var logPrefix = '[nodebb-plugin-import-phpbb]';
             database: config.dbname || config.name || config.database || 'phpbb'
         };
 
-        Exporter.log(_config);
-
         Exporter.config(_config);
         Exporter.config('prefix', config.prefix || config.tablePrefix || '' /* phpbb_ ? */ );
 
