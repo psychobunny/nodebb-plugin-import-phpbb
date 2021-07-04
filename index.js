@@ -272,8 +272,8 @@ var logPrefix = '[nodebb-plugin-import-phpbb]';
 			+ prefix + 'attachments.poster_id as _uid, '
             + prefix + 'attachments.topic_id as _tid, '
             + prefix + 'attachments.post_msg_id as _pid, '
-			+ prefix + 'attachments.physical_filename as _url, '
-            + prefix + 'attachments.real_filename as _filename, '
+			+ prefix + 'attachments.physical_filename as url, '
+            + prefix + 'attachments.real_filename as filename, '
             + prefix + 'attachments.download_count as _downloads, '
             + prefix + 'attachments.filetime as _timestamp '
 
@@ -288,7 +288,7 @@ var logPrefix = '[nodebb-plugin-import-phpbb]';
                 var map = {};
                 rows.forEach(function(row) {
                     row._timestamp = ((row._timestamp || 0) * 1000) || startms;
-                    row._url = `/uploads/imported_attachments/${row._url || 'N/A'}`
+                    row.url = `/uploads/imported_attachments/${row.url || 'N/A'}`
                     map[`${row._tid}_${row._pid}`] = map[`${row._tid}_${row._pid}`] || [];
                     map[`${row._tid}_${row._pid}`].push(row)
                 });
@@ -366,7 +366,7 @@ var logPrefix = '[nodebb-plugin-import-phpbb]';
 			Exporter._topicsMainPids = {};
 			Object.keys(topicsMap).forEach(function(_tid) {
 				var topic = topicsMap[_tid];
-				Exporter._topicsMainPids[topic.topic_first_post_id] = topic._tid;
+				Exporter._topicsMainPids[topic._mainPid] = topic._tid;
 			});
 			callback(null, Exporter._topicsMainPids);
 		});
