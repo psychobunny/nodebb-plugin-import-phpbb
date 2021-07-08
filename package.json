@@ -1,6 +1,6 @@
 {
   "name": "nodebb-plugin-import-phpbb",
-  "version": "0.1.6",
+  "version": "0.2.0",
   "description": "A phpBB2 to NodeBB data exporter",
   "main": "./index.js",
   "scripts": {
