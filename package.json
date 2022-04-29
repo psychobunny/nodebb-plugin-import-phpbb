@@ -30,7 +30,7 @@
     "index": false
   },
   "dependencies": {
-    "async": "~0.9.0",
+    "async": "~2.6.4",
     "extend": "^3.0.2",
     "fs-extra": "~0.11.0",
     "lodash": "^4.17.21",
